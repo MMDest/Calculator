@@ -14,11 +14,9 @@ class ViewController: UIViewController {
         UILabel!
     
     var stillTyping = false
-    
+    var dotIsPlaced = false
     var firstOperand: Double = 0
-    
     var secondOperand: Double = 0
-    
     var operationSign: String = ""
 
     var currentInput: Double {
@@ -26,7 +24,13 @@ class ViewController: UIViewController {
             return Double(displayResultLabel.text!)!
         }
         set{
+            let value = "\(newValue)"
+            let valueArray = value.components(separatedBy: ".")
+            if valueArray[1] == "0"{
+                displayResultLabel.text = "\(valueArray[1])"
+            }else{
             displayResultLabel.text = "\(newValue)"
+            }
             stillTyping = false
         }
     }
@@ -54,6 +58,8 @@ class ViewController: UIViewController {
         
         stillTyping = false
         
+        dotIsPlaced = false
+        
     }
     
     func operateWithTwoOperands(operation: (Double, Double) -> Double){
@@ -66,6 +72,8 @@ class ViewController: UIViewController {
         if stillTyping {
             secondOperand = currentInput
         }
+        
+        dotIsPlaced = false
         
         switch operationSign {
         case "+":
@@ -82,6 +90,43 @@ class ViewController: UIViewController {
         }
         
     }
+    
+    @IBAction func clearButton(_ sender: UIButton) {
+        firstOperand = 0
+        secondOperand = 0
+        currentInput = 0
+        displayResultLabel.text = "0"
+        stillTyping = false
+        dotIsPlaced = false
+        operationSign = ""
+    }
+    
+    @IBAction func plusMinusButton(_ sender: UIButton) {
+        currentInput = -currentInput
+    }
+    
+    @IBAction func percentageButton(_ sender: UIButton) {
+        if firstOperand ==  0 {
+            currentInput = currentInput / 100
+        } else {
+             secondOperand = firstOperand * currentInput / 100
+        }
+    }
+    
+    @IBAction func squareRootButton(_ sender: UIButton) {
+        currentInput = sqrt(currentInput)
+    }
+    
+    @IBAction func dotButton(_ sender: UIButton) {
+        if stillTyping && !dotIsPlaced{
+            displayResultLabel.text = displayResultLabel.text! + "."
+            dotIsPlaced = true
+        }else if !stillTyping && !dotIsPlaced{
+            displayResultLabel.text = "0."
+        }
+         
+    }
+    
     
 }
 
